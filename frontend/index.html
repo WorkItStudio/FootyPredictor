@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">⚽</div>
+        <div class="logo-text">FootyGPT</div>
+      </div>
+      <div class="logo-sub">AI Prediction Engine</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Data</div>
+      <button class="btn" id="btn-refresh">
+        <span class="icon">🔄</span> Refresh Fixtures
+      </button>
+      <button class="btn" id="btn-summary">
+        <span class="icon">📊</span> Data Summary
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Competitions</div>
+    </div>
+    <div class="comp-pills">
+      <button class="pill active" data-comp="Premier League">PL</button>
+      <button class="pill" data-comp="Champions League">UCL</button>
+      <button class="pill" data-comp="La Liga">LL</button>
+      <button class="pill" data-comp="Serie A">SA</button>
+      <button class="pill" data-comp="Bundesliga">BL</button>
+      <button class="pill" data-comp="Ligue 1">L1</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Track Record</div>
+    </div>
+    <div class="stats-panel">
+      <div class="stat-row">
+        <span class="stat-label">Predictions made</span>
+        <span class="stat-value" id="stat-total">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Accuracy</span>
+        <span class="stat-value" id="stat-accuracy">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Fixtures stored</span>
+        <span class="stat-value" id="stat-fixtures">—</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span class="status-dot" id="status-dot"></span>
+      <span class="status-text" id="status-text">checking...</span>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title">AI Analyst</div>
+          <div class="topbar-sub">Powered by Claude + football-data.org</div>
+        </div>
+      </div>
+      <div class="team-inputs">
+        <input class="team-input" id="team-a" placeholder="Home team..." />
+        <span class="vs-label">VS</span>
+        <input class="team-input" id="team-b" placeholder="Away team..." />
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">⚽</div>
+        <h2>Ask me anything about football</h2>
+        <p>I can predict match outcomes, analyse team form, compare head-to-head records, and discuss upcoming fixtures across Europe's top leagues.</p>
+        <div class="suggestions">
+          <button class="suggestion">Who will win the Premier League?</button>
+          <button class="suggestion">Predict Arsenal vs Chelsea</button>
+          <button class="suggestion">Man City form last 5 games</button>
+          <button class="suggestion">Champions League predictions</button>
+          <button class="suggestion">Show upcoming fixtures</button>
+          <button class="suggestion">Which teams are in best form?</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <div class="input-wrap">
+        <textarea
+          class="chat-input"
+          id="chat-input"
+          placeholder="Ask about predictions, fixtures, team form..."
+          rows="1"
+        ></textarea>
+        <button class="send-btn" id="send-btn">➤</button>
+      </div>
+      <div class="input-hint">Enter to send · Shift+Enter for new line · Set team names above for richer predictions</div>
+    </div>
+  </main>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
