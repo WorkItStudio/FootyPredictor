@@ -1,5 +1,7 @@
 /* ── Config ── */
-const API = 'http://localhost:8000';
+// Switch between local and hosted backend
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API = IS_LOCAL ? 'http://localhost:8000' : 'https://footballgpt-backend.onrender.com';
 
 /* ── State ── */
 let isTyping = false;
