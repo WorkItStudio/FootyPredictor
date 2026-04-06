@@ -15,8 +15,7 @@ const statusText  = document.getElementById('status-text');
 const statTotal   = document.getElementById('stat-total');
 const statAcc     = document.getElementById('stat-accuracy');
 const statFix     = document.getElementById('stat-fixtures');
-const teamA       = document.getElementById('team-a');
-const teamB       = document.getElementById('team-b');
+
 const btnRefresh  = document.getElementById('btn-refresh');
 const btnSummary  = document.getElementById('btn-summary');
 
@@ -208,9 +207,6 @@ async function sendMessage() {
   const message = chatInput.value.trim();
   if (!message || isTyping) return;
 
-  const home = teamA.value.trim();
-  const away = teamB.value.trim();
-
   chatInput.value = '';
   chatInput.style.height = 'auto';
   isTyping = true;
@@ -223,7 +219,7 @@ async function sendMessage() {
     const r = await fetch(`${API}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, team_a: home, team_b: away }),
+      body: JSON.stringify({ message, team_a: '', team_b: '' }),
     });
 
     if (!r.ok) {

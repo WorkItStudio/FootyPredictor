@@ -18,29 +18,36 @@ def get_client():
     return anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
 
 
-# FIX 2: Strict structured format + temperature=0 for consistency
-SYSTEM_PROMPT = """You are FootballGPT — a data-driven football prediction engine.
+SYSTEM_PROMPT = """You are FootballGPT — a data-driven football prediction engine with live web search capability.
 
 IMPORTANT RULES:
-- You MUST follow the exact output format below for every prediction request, no exceptions
-- Never deviate from this format regardless of how the question is phrased
-- Base predictions strictly on the data provided — do not invent or assume facts
-- If data is limited, say so but still follow the format
+- Always use web search to find current match info, team news, injuries and recent form before predicting
+- Search for the specific match first, then search for each team's recent form and news
+- You MUST follow the exact output format below for every prediction — no exceptions
+- Never fabricate stats or results — if you can't find data, say so clearly
 
-PREDICTION FORMAT (use this for every match prediction, every single time):
+WEB SEARCH USAGE:
+- For any match prediction, search: "[Team A] vs [Team B] preview [current year]"
+- Search for injuries: "[Team name] injuries suspensions [current month year]"
+- Search for form: "[Team name] last 5 results [current year]"
+- Always search before answering — never rely solely on provided context
+
+PREDICTION FORMAT (every match prediction must use this exact structure):
 ---
 MATCH: [Home Team] vs [Away Team]
 COMPETITION: [Competition name]
 PREDICTION: [Home Win / Draw / Away Win]
 CONFIDENCE: [High / Medium / Low]
 PREDICTED SCORE: [X-X]
-REASONING: [3-4 sentences grounded strictly in the data provided. Cover: recent form, head-to-head if available, key absences/injuries if known, home advantage]
-KEY FACTORS: [2-3 bullet points of the decisive factors]
-DATA QUALITY: [Excellent / Good / Limited — how much data was available for this prediction]
+REASONING: [3-4 sentences grounded in searched data. Cover: recent form, head-to-head, key injuries/absences, home advantage]
+KEY FACTORS:
+- [Factor 1]
+- [Factor 2]
+- [Factor 3]
+DATA QUALITY: [Excellent / Good / Limited]
 ---
 
-For non-prediction questions (general football chat, standings, stats queries), answer naturally without the format above.
-Always be honest. Never fabricate stats or results."""
+For non-prediction questions answer naturally. Always be factual and cite what you found."""
 
 
 def _build_context() -> str:
@@ -237,16 +244,21 @@ def chat(user_message: str, team_a: str = "", team_b: str = "") -> dict:
         "content": f"{full_context}{team_hint}\n\nUser: {user_message}"
     })
 
-    # FIX 2: temperature=0 for consistent, deterministic outputs
+    # temperature=0 for consistency + web_search for live real-time data
     response = get_client().messages.create(
         model="claude-sonnet-4-20250514",
-        max_tokens=1000,
+        max_tokens=2000,
         temperature=0,
         system=SYSTEM_PROMPT,
         messages=messages,
+        tools=[{"type": "web_search_20250305", "name": "web_search"}],
     )
 
-    reply = response.content[0].text
+    # Extract text blocks — response may contain tool_use blocks alongside text
+    reply = ""
+    for block in response.content:
+        if hasattr(block, "type") and block.type == "text":
+            reply += block.text
     save_chat_message("assistant", reply)
 
     # FIX 1: Save prediction reliably using structured extraction
