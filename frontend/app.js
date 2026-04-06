@@ -148,7 +148,14 @@ function appendMessage(role, text, extra = {}) {
 }
 
 function formatText(text) {
-  // Highlight PREDICTION: lines with coloured badge
+  // Escape HTML to prevent injection
+  text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // MATCH line
+  text = text.replace(/MATCH:\s*(.+)/g, (_, m) =>
+    `<strong style="color:var(--text)">⚽ ${m}</strong>`);
+
+  // PREDICTION line
   text = text.replace(/PREDICTION:\s*(.+)/g, (_, p) => {
     const lower = p.toLowerCase();
     let cls = 'draw';
@@ -157,7 +164,20 @@ function formatText(text) {
     return `<span class="prediction-badge ${cls}">⚡ PREDICTION: ${p}</span>`;
   });
 
-  // Render **bold** markdown
+  // CONFIDENCE line
+  text = text.replace(/CONFIDENCE:\s*(High|Medium|Low)/gi, (_, c) => {
+    const cls = c.toLowerCase() === 'high' ? 'win' : c.toLowerCase() === 'low' ? 'loss' : 'draw';
+    return `<span class="prediction-badge ${cls}">CONFIDENCE: ${c}</span>`;
+  });
+
+  // PREDICTED SCORE line
+  text = text.replace(/PREDICTED SCORE:\s*(.+)/g, (_, s) =>
+    `<span style="color:var(--accent);font-family:'DM Mono',monospace;font-weight:700">PREDICTED SCORE: ${s}</span>`);
+
+  // Horizontal dividers
+  text = text.replace(/^---$/gm, "<hr style='border-color:var(--border);margin:8px 0'>");
+
+  // Bold markdown
   text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
   return text;

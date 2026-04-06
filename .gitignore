@@ -1,0 +1,29 @@
+# Environment variables - NEVER commit these
+backend/.env
+.env
+
+# Virtual environment
+backend/venv/
+venv/
+
+# Database (local only - Render uses its own)
+backend/football.db
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
